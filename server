@@ -12,11 +12,11 @@ cat <<EOF
 
 $NAME (PHP built-in web server manager) Version 0.1.0
 PHP builtin server manager on port $PORT
- 
+
 usage: ./$NAME <command> [<hostname>:<port>]
 
 Available commands:
-  start     Starts PHP built-in web server server on specified hostname:port, default is localhost:$PORT  
+  start     Starts PHP built-in web server server on specified hostname:port, default is localhost:$PORT
   stop      Stops the PHP built-in web server
   restart   Stops and Starts on previously specified hostname:port
 
@@ -27,7 +27,6 @@ $NAME homepage: <https://github.com/cubny/php-built-in-server-manager>
 EOF
 return 0
 }
-
 
 # if no command specified exit and show usage
 if [[ $# < 1 ]]; then
@@ -51,17 +50,38 @@ fi
 PIDFILE="$NAME".pid
 LOGFILE="$NAME".log
 
+validate_server () {
+  which php &> /dev/null
+  if [[ $? -eq 1 ]]; then
+    echo "Error: PHP not found. Please install PHP version 5.4 or greater"
+    return 1
+  fi
+
+  php -h | grep -q -- '-S'
+  if [[ $? -eq 1 ]]; then
+    echo "Error: PHP version must be 5.4 or greater"
+    return 1
+  fi
+
+  return 0
+}
 
 start_server () {
+
+  validate_server
+  if [[ $? -eq 1 ]]; then
+    return 1
+  fi
+
   if [[ -e "$PIDFILE" ]]; then
     echo Server seems to be running!
-    echo 
+    echo
     echo if not, there is probably a zombie "$PIDFILE" in this directory.
     echo if you are sure no server is running just remove "$PIDFILE" manually and start again
     return 1
   else
     echo "$NAME" started on $HOST:$PORT
-    (php -S "$HOST":"$PORT" >> "$LOGFILE" 2>&1)&
+    php -S "$HOST":"$PORT" >> "$LOGFILE" 2>&1 &
     echo "$HOST":"$PORT":$! > $PIDFILE
     return 0
   fi
@@ -69,20 +89,19 @@ start_server () {
 
 stop_server () {
   if [[ -e "$PIDFILE" ]]; then
-    IFS=':' read -r -a hostportpid <<< `cat "$PIDFILE"` 
+    IFS=':' read -r -a hostportpid <<< `cat "$PIDFILE"`
     PID=${hostportpid[2]}
     PORT=${hostportpid[1]}
     HOST=${hostportpid[0]}
-    kill "$PID"
-    rm "$PIDFILE"
+    kill -9 "$PID"
+    rm -f "$PIDFILE"
     echo "$NAME" stopped!
     return 0
-  else 
+  else
     echo "$NAME" is not running
     return 1
   fi
 }
-
 
 case $1 in
   start) start_server;;
