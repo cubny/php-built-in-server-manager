@@ -19,6 +19,7 @@ usage () {
   start     Starts PHP built-in web server server on specified hostname:port, default is localhost:$PORT
   stop      Stops the PHP built-in web server
   restart   Stops and Starts on previously specified hostname:port
+  status    Status of "$NAME" process
 
 
   report bugs to me@cubny.com
