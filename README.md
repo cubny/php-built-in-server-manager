@@ -13,11 +13,11 @@ Simple Bash script to stop, start, restart PHP built-in web server
 
 ## How to Use it
 
-This is a very basic script, you're not limitted. choose one either one of these:
- - Copy `server` script to the root of the PHP project.
- - Copy/Symlink it in one of your $PATH directories e.g. `~/bin` or `/usr/local/bin` and use it everywhere.
+This is a very basic script so you're not limitted to any specific method. I suggest one of these two:
+ 1. Copy `server` script to root of the PHP project.
+ 2. Copy/Symlink to your $PATH e.g. `~/bin` or `/usr/local/bin` and use it everywhere.
 
-**Note:** On start, the script creates `server.pid` and `server.log` files in current working directory  and when stopped, it only deletes the `server.pid` and `server.log` remains there.
+**Note:** When it starts, the script creates `server.pid` and `server.log` files in current working directory and when stopped, it deletes the `server.pid` but `server.log` remains there.
 
-the `server` script can be renamed to whatever you desire. I personally prefer `pmserver`.
-`.pid` and `.log` files have the same name as the script file e.g. when renaming `server` to `pmserver` there will be `pmserver.pid` and `pmserver.log` files
+the `server` script can be renamed to whatever. I personally prefer `pmserver`.
+`.pid` and `.log` files will have the same name as the filename e.g. when renaming `server` to `pmserver` there will be `pmserver.pid` and `pmserver.log` files
