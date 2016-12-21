@@ -1,5 +1,5 @@
 # php-built-in-server-manager
-Manage PHP built-in web server
+Manage PHP built-in web server like a pro
 
 **usage**: `./server <command> [<hostname>:<port>]`
 
