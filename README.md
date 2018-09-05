@@ -5,10 +5,11 @@ Manage PHP built-in web server like a pro
 
 **Available commands**:
 ```
-  start     Starts PHP built-in web server server on specified hostname:port, default is localhost:8080  
+  start     Starts PHP built-in web server server on specified hostname:port, default is localhost:8080
   stop      Stops the PHP built-in web server
   restart   Stops and Starts on previously specified hostname:port
   status    Status of the process
+  log       Show the PHP built-in web server logs. Use the -f option for a live update
 ```
 
 ## How to Use it

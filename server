@@ -10,7 +10,7 @@ NAME=${0##*/}
 usage () {
   cat <<EOF
 
-  $NAME (PHP built-in web server manager) Version 0.1.0
+  $NAME (PHP built-in web server manager) Version 0.2.0
   PHP builtin server manager on port $PORT
 
   usage: ./$NAME <command> [<hostname>:<port>]
@@ -21,6 +21,7 @@ usage () {
   stop      Stops the PHP built-in web server
   restart   Stops and Starts on previously specified hostname:port
   status    Status of "$NAME" process
+  log       Show the PHP built-in web server logs. Use the -f option for a live update
 
 
   report bugs to me@cubny.com
@@ -142,6 +143,16 @@ status_server() {
 }
 
 
+log_server() {
+  if read_pidfile && kill -0 "$PID" ; then
+    if [[ "$1" = "-f" ]]; then
+      TAIL_OPTS="-f"
+    fi
+    tail $TAIL_OPTS "$LOGFILE"
+  else
+    printf "${YELLOW}"$NAME" is not running!${NORMAL}\n"
+  fi
+}
 
 
 setup_colors
@@ -151,7 +162,7 @@ case $1 in
   stop)  stop_server;;
   restart) stop_server; start_server ;;
   status) status_server;;
-  log) log_server;;
+  log) log_server $2;;
   -h) usage ;;
   --help) usage ;;
   *) usage;;
