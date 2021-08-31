@@ -4,20 +4,23 @@
 HOST=localhost
 # default port number
 PORT=8080
+# router PHP script (optional)
+ROUTER=
 # script name
 NAME=${0##*/}
 
 usage () {
   cat <<EOF
 
-  $NAME (PHP built-in web server manager) Version 0.2.0
+  $NAME (PHP built-in web server manager) Version 0.3.0
   PHP builtin server manager on port $PORT
 
-  usage: ./$NAME <command> [<hostname>:<port>]
+  usage: ./$NAME <command> [<hostname>:<port> [<router>]]
 
   Available commands:
 
   start     Starts PHP built-in web server server on specified hostname:port, default is localhost:$PORT
+            router (PHP script) can be used to handle requests
   stop      Stops the PHP built-in web server
   restart   Stops and Starts on previously specified hostname:port
   status    Status of "$NAME" process
@@ -71,6 +74,14 @@ if [[ $# > 1 ]]; then
   fi
 fi
 
+# if router specified 
+if [[ $# > 2 ]]; then
+  read -r router <<< "$3"
+  if [[ ! -z "${router}" ]]; then
+    ROUTER=${router}
+  fi
+fi
+
 # pidfile contents would be hostname:port:pid
 PIDFILE="$NAME".pid
 LOGFILE="$NAME".log
@@ -106,7 +117,7 @@ start_server () {
     return 1
   else
     printf "${GREEN}"$NAME" started on $HOST:$PORT${NORMAL}\n"
-    php -S "$HOST":"$PORT" >> "$LOGFILE" 2>&1 &
+    php -S "$HOST":"$PORT" $ROUTER >> "$LOGFILE" 2>&1 &
     echo "$HOST":"$PORT":$! > $PIDFILE
     return 0
   fi
